@@ -1,8 +1,11 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { getSavedTasks, setSavedTasks } from "../utils/LocalStorage";
 import { v4 as uuidv4 } from "uuid";
+import { deleteTask } from "../utils/DeleteTask";
+import DeleteModal from "./DeleteModal";
 
-//Design
+// Design
 import {
 	TextField,
 	IconButton,
@@ -20,7 +23,10 @@ const TaskList = () => {
 	const [tasks, setTasks] = useState(getSavedTasks());
 	const [newTask, setNewTask] = useState("");
 	const [error, setError] = useState(false);
+	const [taskToDelete, setTaskToDelete] = useState(null);
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
+	//Add task
 	const handleAddTask = () => {
 		if (!newTask.trim()) {
 			setError(true);
@@ -31,6 +37,25 @@ const TaskList = () => {
 		setNewTask("");
 		setSavedTasks(updatedTasks);
 		setError(false);
+	};
+
+	//Delete task
+	const handleDeleteClick = (taskId) => {
+		setTaskToDelete(taskId);
+		setDeleteModalOpen(true);
+	};
+
+	const handleDeleteConfirm = () => {
+		const updatedTaskList = deleteTask(tasks, taskToDelete);
+		setTasks(updatedTaskList);
+		setSavedTasks(updatedTaskList);
+		setDeleteModalOpen(false);
+		setTaskToDelete(null);
+	};
+
+	const handleDeleteCancel = () => {
+		setTaskToDelete(null);
+		setDeleteModalOpen(false);
 	};
 
 	return (
@@ -92,9 +117,9 @@ const TaskList = () => {
 					>
 						<Checkbox
 							sx={{
-								color: "#B5CFB7", 
+								color: "#B5CFB7",
 								"&.Mui-checked": {
-									color: "#B5CFB7", 
+									color: "#B5CFB7",
 								},
 							}}
 						/>
@@ -108,7 +133,13 @@ const TaskList = () => {
 								<IconButton aria-label="edit" sx={{ color: "#BC9F8B" }}>
 									<FaEdit />
 								</IconButton>
-								<IconButton aria-label="delete" sx={{ color: "#BC9F8B" }}>
+								<IconButton
+									aria-label="delete"
+									sx={{ color: "#BC9F8B" }}
+									component={Link}
+									to="/deletetask"
+									onClick={() => handleDeleteClick(task.id)}
+								>
 									<FaTrashAlt />
 								</IconButton>
 							</ButtonGroup>
@@ -116,6 +147,11 @@ const TaskList = () => {
 					</ListItem>
 				))}
 			</List>
+			<DeleteModal
+				open={deleteModalOpen}
+				onClose={handleDeleteCancel}
+				onDelete={handleDeleteConfirm}
+			/>
 		</div>
 	);
 };
