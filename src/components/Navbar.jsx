@@ -5,7 +5,7 @@ const Navbar = () => {
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar
 				position="static"
-				sx={{ backgroundColor: "#B5CFB7", paddingLeft: "20px", marginTop: "0", paddingBlock:"20px" }}
+				sx={{ backgroundColor: "#B5CFB7", paddingLeft: "20px", marginTop: "0", paddingBlock:"20px" , marginBottom:"100px"}}
 			>
 				<Toolbar variant="dense" sx={{margin:"auto"}}>
 					<Typography variant="h4" color="inherit" component="div">

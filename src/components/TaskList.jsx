@@ -1,8 +1,7 @@
+import { useTaskContext } from "../context/TaskContext";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { getSavedTasks, setSavedTasks } from "../utils/LocalStorage";
-import { v4 as uuidv4 } from "uuid";
-import { deleteTask } from "../utils/DeleteTask";
+import EditTask from "./EditTask";
 import DeleteModal from "./DeleteModal";
 
 // Design
@@ -15,40 +14,39 @@ import {
 	ButtonGroup,
 	Typography,
 	Checkbox,
+	Box,
 } from "@mui/material";
 import { IoMdAddCircle } from "react-icons/io";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import Image1 from "../assets/background.png";
 
 const TaskList = () => {
-	const [tasks, setTasks] = useState(getSavedTasks());
+	const { tasks, addTask, deleteTask, editTask } = useTaskContext();
 	const [newTask, setNewTask] = useState("");
 	const [error, setError] = useState(false);
 	const [taskToDelete, setTaskToDelete] = useState(null);
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [isEdit, setIsEdit] = useState(false);
+	const [editingTaskId, setEditingTaskId] = useState(null);
 
-	//Add task
+	//Add
 	const handleAddTask = () => {
 		if (!newTask.trim()) {
 			setError(true);
 			return;
 		}
-		const updatedTasks = [...tasks, { id: uuidv4(), text: newTask }];
-		setTasks(updatedTasks);
+		addTask(newTask);
 		setNewTask("");
-		setSavedTasks(updatedTasks);
 		setError(false);
 	};
-
-	//Delete task
+	//Delete
 	const handleDeleteClick = (taskId) => {
 		setTaskToDelete(taskId);
 		setDeleteModalOpen(true);
 	};
 
 	const handleDeleteConfirm = () => {
-		const updatedTaskList = deleteTask(tasks, taskToDelete);
-		setTasks(updatedTaskList);
-		setSavedTasks(updatedTaskList);
+		deleteTask(taskToDelete);
 		setDeleteModalOpen(false);
 		setTaskToDelete(null);
 	};
@@ -57,15 +55,59 @@ const TaskList = () => {
 		setTaskToDelete(null);
 		setDeleteModalOpen(false);
 	};
+	//Edit
+	const handleEditClick = (taskId) => {
+		setEditingTaskId(taskId);
+		setIsEdit(true);
+	};
+
+	const handleEditConfirm = (newText) => {
+		editTask(editingTaskId, newText);
+		setIsEdit(false);
+		setEditingTaskId(null);
+	};
 
 	return (
-		<div
-			style={{
-				backgroundColor: "#F6F5F5",
-				width: "80%",
-				marginTop: "100px",
+		<Box
+			sx={{
+				backgroundImage: `url(${Image1})`,
+				backgroundSize: "cover",
+				backgroundPosition: "center",
+				width: "100%",
+				paddingTop: "150px",
+				padding: "20px",
+				borderRadius: "10px",
+				boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+				position: "relative",
+				maxWidth: "800px",
+				margin: "0 auto",
 			}}
 		>
+			{/*sticky note effect */}
+			<Box
+				sx={{
+					position: "absolute",
+					top: "-20px",
+					left: "20px",
+					width: "80px",
+					height: "80px",
+					backgroundColor: "#f1c40f",
+					boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+					transform: "rotate(-5deg)",
+					borderRadius: "5px",
+					padding: "10px",
+					textAlign: "center",
+					fontSize: "1.2rem",
+					color: "#fff",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					fontWeight: "bold",
+				}}
+			>
+				To Do
+			</Box>
+
 			<div
 				style={{
 					display: "flex",
@@ -90,11 +132,11 @@ const TaskList = () => {
 						width: "48px",
 						height: "48px",
 						padding: "0",
-						color: "rgb(152, 228, 255)",
+						color: "#f1c40f",
 						boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
 						transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
 						"&:hover": {
-							color: "#CADABF",
+							color: "#B5CFB7",
 							transform: "translateY(-2px)",
 							boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
 						},
@@ -124,21 +166,35 @@ const TaskList = () => {
 							}}
 						/>
 						<ListItemText>
-							<Typography variant="body1" sx={{ fontSize: "1.2rem" }}>
-								{task.text}
-							</Typography>
+							{isEdit && editingTaskId === task.id ? (
+								<EditTask
+									taskText={task.text}
+									setIsEdit={setIsEdit}
+									handleEditConfirm={handleEditConfirm}
+								/>
+							) : (
+								<Typography variant="body1" sx={{ fontSize: "1.2rem" }}>
+									{task.text}
+								</Typography>
+							)}
 						</ListItemText>
 						<div>
 							<ButtonGroup variant="outlined" aria-label="Basic button group">
-								<IconButton aria-label="edit" sx={{ color: "#BC9F8B" }}>
+								<IconButton
+									aria-label="edit"
+									sx={{ color: "#BC9F8B" }}
+									onClick={() => handleEditClick(task.id)}
+									component={Link}
+									to="/edit-task"
+								>
 									<FaEdit />
 								</IconButton>
 								<IconButton
 									aria-label="delete"
 									sx={{ color: "#BC9F8B" }}
+									onClick={() => handleDeleteClick(task.id)}
 									component={Link}
 									to="/deletetask"
-									onClick={() => handleDeleteClick(task.id)}
 								>
 									<FaTrashAlt />
 								</IconButton>
@@ -147,12 +203,13 @@ const TaskList = () => {
 					</ListItem>
 				))}
 			</List>
+			{/* Delete Modal */}
 			<DeleteModal
 				open={deleteModalOpen}
 				onClose={handleDeleteCancel}
 				onDelete={handleDeleteConfirm}
 			/>
-		</div>
+		</Box>
 	);
 };
 
