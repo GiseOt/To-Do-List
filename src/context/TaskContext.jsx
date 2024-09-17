@@ -7,6 +7,7 @@ const TaskContext = createContext();
 export const TaskProvider = ({ children }) => {
 	const [tasks, setTasks] = useState(getSavedTasks());
 	const [error, setError] = useState(false);
+     const [filter, setFilter] = useState("all");
 
 	//Add tasks
 	const addTask = (taskText) => {
@@ -28,6 +29,7 @@ export const TaskProvider = ({ children }) => {
 		setTasks(updatedTasks);
 		setSavedTasks(updatedTasks);
 	};
+
 	//Edit tasks
 	const editTask = (taskId, newText) => {
 		const updatedTasks = tasks.map((task) =>
@@ -36,10 +38,36 @@ export const TaskProvider = ({ children }) => {
 		setTasks(updatedTasks);
 		setSavedTasks(updatedTasks);
 	};
+    
+  //Filter tasks
+     const toggleTaskCompletion = (taskId) => {
+				const updatedTasks = tasks.map((task) =>
+					task.id === taskId ? { ...task, completed: !task.completed } : task
+				);
+				setTasks(updatedTasks);
+				setSavedTasks(updatedTasks);
+			};
+
+			const filteredTasks = tasks.filter((task) => {
+				if (filter === "completed") return task.completed;
+				if (filter === "incomplete") return !task.completed;
+				return true;
+                
+			});
 
 	return (
 		<TaskContext.Provider
-			value={{ tasks, addTask, deleteTask, editTask, error, setError }}
+			value={{
+				tasks: filteredTasks,
+				addTask,
+				deleteTask,
+				editTask,
+				toggleTaskCompletion,
+				error,
+				setError,
+				setFilter, 
+				filter, 
+			}}
 		>
 			{children}
 		</TaskContext.Provider>

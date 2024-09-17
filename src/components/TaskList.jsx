@@ -1,5 +1,5 @@
 import { useTaskContext } from "../context/TaskContext";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { useState } from "react";
 import EditTask from "./EditTask";
 import DeleteModal from "./DeleteModal";
@@ -21,7 +21,7 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import Image1 from "../assets/background.png";
 
 const TaskList = () => {
-	const { tasks, addTask, deleteTask, editTask } = useTaskContext();
+	const { tasks, addTask, deleteTask, editTask, toggleTaskCompletion } = useTaskContext();
 	const [newTask, setNewTask] = useState("");
 	const [error, setError] = useState(false);
 	const [taskToDelete, setTaskToDelete] = useState(null);
@@ -158,6 +158,8 @@ const TaskList = () => {
 						sx={{ display: "flex", alignItems: "center" }}
 					>
 						<Checkbox
+							checked={task.completed || false}
+							onChange={() => toggleTaskCompletion(task.id)}
 							sx={{
 								color: "#B5CFB7",
 								"&.Mui-checked": {
@@ -173,7 +175,13 @@ const TaskList = () => {
 									handleEditConfirm={handleEditConfirm}
 								/>
 							) : (
-								<Typography variant="body1" sx={{ fontSize: "1.2rem" }}>
+								<Typography
+									variant="body1"
+									sx={{
+										fontSize: "1.2rem",
+										textDecoration: task.completed ? "line-through" : "none",
+									}}
+								>
 									{task.text}
 								</Typography>
 							)}
@@ -185,7 +193,7 @@ const TaskList = () => {
 									sx={{ color: "#BC9F8B" }}
 									onClick={() => handleEditClick(task.id)}
 									component={Link}
-									to="/edit-task"
+									to={`/edit-task/${task.id}`}
 								>
 									<FaEdit />
 								</IconButton>
