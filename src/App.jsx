@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router";
 import Navbar from "./components/Navbar";
 import TaskList from "./components/TaskList";
-import DeleteModal from "./components/DeleteModal";
+import { TaskProvider } from "./context/TaskContext";
 
 // Design
 import { Container, CssBaseline } from "@mui/material";
@@ -16,19 +16,24 @@ function App() {
 	});
 
 	return (
-		<ThemeProvider theme={theme}>
-			<CssBaseline />
-			<Navbar />
-			<Container
-				maxWidth="sm"
-				sx={{ display: "flex", justifyContent: "center" }}
-			>
-				<TaskList />
-				<Routes>
-					<Route path="/deletetask" element={<DeleteModal />} />
-				</Routes>
-			</Container>
-		</ThemeProvider>
+		<TaskProvider>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<Navbar />
+				<Container
+					maxWidth="sm"
+					sx={{ display: "flex", justifyContent: "center" }}
+				>
+					<Routes>
+						<Route path="/" element={<TaskList />} />
+						<Route path="/deletetask" element={<TaskList />} />
+						<Route path="/completed" element={<TaskList />} />
+						<Route path="/incomplete" element={<TaskList />} />
+						<Route path="/edit-task/:taskId" element={<TaskList />} />
+					</Routes>
+				</Container>
+			</ThemeProvider>
+		</TaskProvider>
 	);
 }
 

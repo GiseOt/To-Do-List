@@ -34,17 +34,12 @@ const DeleteModal = ({ open, onClose, onDelete }) => {
 						variant="contained"
 						color="error"
 						component={Link}
-						to="/task"
+						to="/"
 						sx={{ mr: 2 }}
 					>
 						Delete
 					</Button>
-					<Button
-						onClick={onClose}
-						variant="outlined"
-						component={Link}
-						to="/task"
-					>
+					<Button onClick={onClose} variant="outlined" component={Link} to="/">
 						Cancel
 					</Button>
 				</Box>

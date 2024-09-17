@@ -1,19 +1,19 @@
-import { Button, ButtonGroup, TextField, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { Button, ButtonGroup, TextField, Stack } from "@mui/material";
 
 const EditTask = ({ taskText, setIsEdit, handleEditConfirm }) => {
 	const navigate = useNavigate();
 
 	const handleCancelEdit = () => {
 		setIsEdit(false);
-		navigate("/task"); 
+		navigate("/");
 	};
 
 	const handleEditTask = (e) => {
 		e.preventDefault();
 		const newTaskText = e.target.descripcion.value;
 		handleEditConfirm(newTaskText);
-		navigate("/task"); 
+		navigate("/");
 	};
 
 	return (
