@@ -1,11 +1,23 @@
-import { Link } from "react-router-dom";
 import { Modal, Fade, Button, Typography, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const DeleteModal = ({ open, onClose, onDelete }) => {
+	const navigate = useNavigate();
+
+	const handleDelete = () => {
+		onDelete();
+		navigate("/");
+	};
+
+	const handleCancel = () => {
+		onClose();
+		navigate("/");
+	};
+
 	return (
 		<Modal
 			open={open}
-			onClose={onClose}
+			onClose={handleCancel}
 			aria-labelledby="delete-modal-title"
 			aria-describedby="delete-modal-description"
 			closeAfterTransition
@@ -28,18 +40,15 @@ const DeleteModal = ({ open, onClose, onDelete }) => {
 					<Typography id="delete-modal-title" variant="h6" gutterBottom>
 						Are you sure you want to delete?
 					</Typography>
-
 					<Button
-						onClick={onDelete}
+						onClick={handleDelete}
 						variant="contained"
 						color="error"
-						component={Link}
-						to="/"
 						sx={{ mr: 2 }}
 					>
 						Delete
 					</Button>
-					<Button onClick={onClose} variant="outlined" component={Link} to="/">
+					<Button onClick={handleCancel} variant="outlined">
 						Cancel
 					</Button>
 				</Box>
