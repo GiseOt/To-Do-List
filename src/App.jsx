@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router";
 import Navbar from "./components/Navbar";
 import TaskList from "./components/TaskList";
 import { TaskProvider } from "./context/TaskContext";
+import Footer from "./components/Footer";
 
 // Design
 import { Container, CssBaseline } from "@mui/material";
@@ -22,7 +23,7 @@ function App() {
 				<Navbar />
 				<Container
 					maxWidth="sm"
-					sx={{ display: "flex", justifyContent: "center" }}
+					sx={{ display: "flex", justifyContent: "center", mb: "100px" }}
 				>
 					<Routes>
 						<Route path="/" element={<TaskList />} />
@@ -32,6 +33,7 @@ function App() {
 						<Route path="/edit-task/:taskId" element={<TaskList />} />
 					</Routes>
 				</Container>
+				<Footer />
 			</ThemeProvider>
 		</TaskProvider>
 	);
