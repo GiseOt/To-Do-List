@@ -65,3 +65,5 @@ Si deseas contribuir a la To Do List App, ¡eres más que bienvenido! 🙌 Puede
 ## Contacto 💬
 
 Si tienes alguna pregunta, sugerencia o simplemente deseas conectar, ¡no dudes en contactarme! Puedes encontrarme en [LinkedIn](https://www.linkedin.com/in/gisellaortizdelatabla/) 💼.
+
+Puedes ver el proyecto desplegado en Netlify  [aquí](https://todolist-desafio.netlify.app/). 
